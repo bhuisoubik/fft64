@@ -1,0 +1,2 @@
+add datapath image to readme and architecture.md
+edit results in readme.md
