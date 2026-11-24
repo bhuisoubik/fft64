@@ -11,6 +11,8 @@ Sample and intermediate data are organized across a two-bank memory architecture
 | Internal / output | Q8.15 (23 b each), unscaled (gain 64), no saturation (overflow provably impossible; sticky `ovf` flag checks it) |
 | Complex multiply | 4 multipliers, sum in 40 b, round half-up once (+2^13 >>> 14) |
 
+Refer to [TOP.md](docs/top.md) for parameters and ports.
+
 ## Repository Layout
 ```text
 ├── docs/       # Datapath diagram, FSM specs, and verification notes
@@ -35,9 +37,8 @@ Refer to [VERFICATION.md](docs/verification.md)
     make model     # Python model self-test
 Requires Verilator >= 5 (tested 5.020), Python 3, numpy.
 
-## Results (168 frames: directed + random)
+## Results
 ![](docs/sqnr.png)
-Bit-exact 168/168 in all four configs (IN_PROB/OUT_PROB = 100/100, 50/100, 100/30, 40/40);
-SQNR vs float: min 79.2 dB (small-amplitude frame), median 91.2 dB, max 99.1 dB.
-Mutation check: 5 deliberately broken RTL variants (no rounding, wrong butterfly sign,
-wrong twiddle index, too-short stage gap, no bit reversal) were all caught.
+Per-frame verification against a `numpy.fft` golden reference demonstrates high fidelity across ~168 test frames, maintaining Signal-to-Quantization-and-Noise Ratio (SQNR) largely between ~87 dB and ~93.5 dB (with a distinct ~80–81 dB regime around frames 79–107).
+
+The accompanying per-frame maximum component error stays bounded within tens of LSBs on a logarithmic scale, confirming consistent fixed-point/RTL numerical behavior across varying test frame regimes.
